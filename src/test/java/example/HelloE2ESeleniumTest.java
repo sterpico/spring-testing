@@ -1,6 +1,6 @@
 package example;
 
-import io.github.bonigarcia.wdm.ChromeDriverManager;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -10,8 +10,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -28,7 +28,7 @@ public class HelloE2ESeleniumTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ChromeDriverManager.getInstance().setup();
+        WebDriverManager.chromedriver().version("78").setup();
     }
 
     @Before
@@ -37,12 +37,14 @@ public class HelloE2ESeleniumTest {
     }
 
     @After
-    public void tearDown(){
-        driver.close();
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
     }
 
     @Test
-    public void helloPageHasTextHelloWorld(){
+    public void helloPageHasTextHelloWorld() {
         driver.navigate().to(String.format("http://localhost:%s/hello", port));
 
         WebElement body = driver.findElement(By.tagName("body"));
